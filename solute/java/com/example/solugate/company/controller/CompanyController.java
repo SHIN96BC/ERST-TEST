@@ -30,12 +30,13 @@ public class CompanyController {
     }
 
     @GetMapping("contactus")
-    public String contactus() {
-        return "/company/company_contactus";
+    public ModelAndView contactus() {
+        List<CompanyInfo> companyInfoList = companyService.findByCompanyInfoAll();
+        return new ModelAndView("/company/company_contactus", "companyInfoList", companyInfoList);
     }
 
     @GetMapping("history")
-    public String history() {
+    public ModelAndView history() {
         Map<String, List<HistoryForView>> resultMap = companyService.findByHistoryAll();
 
         List<HistoryForView> leftOddList = null;
@@ -50,14 +51,11 @@ public class CompanyController {
             }
         }
 
-        for (HistoryForView leftHistory: leftOddList) {
-            logger.info("leftHistory = " + leftHistory.getDate());
-        }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/company/company_history");
+        modelAndView.addObject("leftOddList", leftOddList);
+        modelAndView.addObject("rightEvenList", rightEvenList);
 
-        for (HistoryForView rightHistory: rightEvenList) {
-            logger.info("rightHistory = " + rightHistory.getDate());
-        }
-
-        return "/company/company_history";
+        return modelAndView;
     }
 }

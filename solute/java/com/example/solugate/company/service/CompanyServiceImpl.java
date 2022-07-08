@@ -4,13 +4,12 @@ import com.example.solugate.company.domain.CompanyInfo;
 import com.example.solugate.company.domain.History;
 import com.example.solugate.company.domain.HistoryForView;
 import com.example.solugate.company.repository.CompanyRepository;
+import com.example.solugate.module.OddAndEven;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.Map;
 
 import static com.example.solugate.constant.CompanyConstant.ODD;
 import static com.example.solugate.constant.CompanyConstant.EVEN;
-import static com.example.solugate.constant.CompanyConstant.ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -43,12 +41,14 @@ public class CompanyServiceImpl implements CompanyService{
         for(History history: historyList) {
             String date = history.getDate();
             String year = date.substring(0, date.indexOf("-"));
-            String month = date.substring(date.indexOf("-")+1, date.length());
+            String month = date.substring(date.indexOf("-")+1);
             HistoryForView historyForView = new HistoryForView(
                     history.getId(), date, history.getContent(),
                     history.getPhoto(), year, month
             );
-            switch (checkOddAndEven(year)) {
+            // 년도가 홀수인지 짝수인지 검사해서 각각 다른 List 에 담아줍니다.
+            OddAndEven oddAndEven = new OddAndEven();
+            switch (oddAndEven.checkOddAndEven(year)) {
                 case ODD:
                     leftOddList.add(historyForView);
                     break;
@@ -59,40 +59,12 @@ public class CompanyServiceImpl implements CompanyService{
                     return null;
             }
         }
+        // controller 로 return 할때는 2개의 list 를 보내야 하기 때문에 map 형태로 넘겨줍니다.
         return new HashMap<String, List<HistoryForView>>(){
             {
                 put("left", leftOddList);
                 put("right", rightEvenList);
             }
         };
-    }
-
-    private int checkOddAndEven(String numberStr) {
-        try {
-            long number = Long.parseLong(numberStr);
-            if(number % 2 == 0) {
-                return EVEN;
-            }else{
-                return ODD;
-            }
-        }catch(NumberFormatException nfe) {
-            return ERROR;
-        }
-    }
-
-    private int checkOddAndEven(int number) {
-        if(number % 2 == 0) {
-            return EVEN;
-        }else{
-            return ODD;
-        }
-    }
-
-    private int checkOddAndEven(long number) {
-        if(number % 2 == 0) {
-            return EVEN;
-        }else{
-            return ODD;
-        }
     }
 }
