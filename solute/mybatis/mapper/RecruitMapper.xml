@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.solugate.mapper.RecruitMapper">
+    <select id="selectRecruitAll" resultType="Recruit">
+        SELECT * FROM recruit ORDER BY id desc
+    </select>
+
+    <select id="selectRecruitPage" parameterType="SetPage" resultType="RecruitForView">
+        <![CDATA[
+            SELECT @rownum:=@rownum-1 as no, r.*
+            FROM (SELECT @rownum:=@rownum+1 as no_count, rt.*
+            FROM (SELECT @rownum:=0) tmp1, (SELECT * FROM recruit) rt
+            WHERE id < 13 ORDER BY id desc) as r
+            WHERE r.no_count > 0 AND r.no_count <= 10 AND (@rownum:=12)=12;
+        ]]>
+    </select>
+</mapper>
