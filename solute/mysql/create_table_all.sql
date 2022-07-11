@@ -23,9 +23,9 @@ CREATE TABLE company_info (
     address_detail VARCHAR(120) NOT NULL,
     subway VARCHAR(120) COMMENT'지하철 경로',
     bus VARCHAR(120) COMMENT'버스 경로',
-    phone VARCHAR(18),
+    phone VARCHAR(18) NOT NULL,
     fax VARCHAR(18),
-    email VARCHAR(50)
+    email VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE customer_center (
@@ -40,7 +40,7 @@ CREATE TABLE customer_center (
 
 CREATE TABLE inquiry_product (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(90) COMMENT'문의 제품 이름',
+    name VARCHAR(90) NOT NULL COMMENT'문의 제품 이름',
     customer_center_id INT NOT NULL,
     FOREIGN KEY (customer_center_id) REFERENCES customer_center(id)
 );
@@ -50,7 +50,7 @@ CREATE TABLE recruit (
     subject VARCHAR(150) NOT NULL,
     recruit_period_start VARCHAR(11) COMMENT'채용 시작 날짜',
     recruit_period_end VARCHAR(11) COMMENT'채용 종료 날짜',
-    full_time BOOLEAN NOT NULL,
+    full_time BOOLEAN NOT NULL COMMENT '상시채용 여부',
     proceed INT NOT NULL COMMENT'진행중=1, 마감=2',
     view BIGINT COMMENT'조회수',
     create_date DATETIME NOT NULL,
@@ -185,6 +185,8 @@ INSERT INTO history VALUES (NULL, '2018-10-10', '자본금 증자 (약 9.7억원
 INSERT INTO history VALUES (NULL, '2018-10-28', '신한캐피탈 투자 유치 (7억원)', NULL);
 INSERT INTO history VALUES (NULL, '2018-11-25', '(주)웅진 비즈니스 파트너 계약 체결', NULL);
 INSERT INTO history VALUES (NULL, '2018-11-21', '사업장 이전 (서울시 마포구 → 서울시 금천구)', 'history_img01.jpg');
+
+COMMIT;
 
 INSERT INTO recruit VALUES (NULL, '전략사업부 영업지원팀 채용', '2019-02-07', '2019-02-28', FALSE, 2, 0, NOW(), NOW());
 INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 1);
@@ -354,7 +356,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담�
 
 INSERT INTO recruit VALUES (NULL, '[상시채용] 음성인식 및 가상상담 개발 개발자 채용', '2022-11-17', '2022-12-13', TRUE, 1, 0, NOW(), NOW());
 INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 12);
-INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 12);
+INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경' , '근무형태', '정규직(필요 시 수습기간 3개월)', 12);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 12);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 12);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '급여', '면접후 결정', 12);
@@ -373,3 +375,21 @@ SELECT id, DATE_FORMAT(date, '%Y-%m') AS date, content, photo, date AS ori_date 
 DELETE FROM history WHERE id = 7;
 
 SELECT * FROM company_info;
+
+SELECT rt.id, subject, recruit_period_start, recruit_period_end, full_time, proceed,
+       view, create_date, update_date, photo, title, sub_title, content
+FROM recruit rt, qualification qf, recruit_content rtc
+WHERE rt.id = 1 AND rt.id = qf.recruit_id AND rt.id = rtc.recruit_id;
+
+SELECT * FROM recruit;
+
+SELECT * FROM recruit_content WHERE recruit_id = 3;
+
+SELECT title, sub_title, content
+FROM recruit_content
+WHERE recruit_id = 1 ORDER BY id;
+
+SELECT photo FROM qualification WHERE recruit_id = 1 ORDER BY id;
+
+UPDATE history SET content = '업데이트 테스트' WHERE id = 1;
+UPDATE history SET content = '㈜솔루게이트 법인 설립' WHERE id = 1;
