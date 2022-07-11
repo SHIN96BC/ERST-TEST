@@ -7,7 +7,7 @@ DROP TABLE solution_content;
 DROP TABLE solution_photo;
 DROP TABLE solution;
 DROP TABLE history;
-DROP TABLE qualification;
+DROP TABLE recruit_qualification;
 DROP TABLE recruit_content;
 DROP TABLE recruit;
 
@@ -48,8 +48,8 @@ CREATE TABLE inquiry_product (
 CREATE TABLE recruit (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     subject VARCHAR(150) NOT NULL,
-    recruit_period_start VARCHAR(11) COMMENT'채용 시작 날짜',
-    recruit_period_end VARCHAR(11) COMMENT'채용 종료 날짜',
+    recruit_start_date VARCHAR(11) COMMENT'채용 시작 날짜',
+    recruit_end_date VARCHAR(11) COMMENT'채용 종료 날짜',
     full_time BOOLEAN NOT NULL COMMENT '상시채용 여부',
     proceed INT NOT NULL COMMENT'진행중=1, 마감=2',
     view BIGINT COMMENT'조회수',
@@ -57,7 +57,7 @@ CREATE TABLE recruit (
     update_date DATETIME NOT NULL
 );
 
-CREATE TABLE qualification (
+CREATE TABLE recruit_qualification (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     photo VARCHAR(100) NOT NULL COMMENT'모집부분 및 자격요건 사진',
     recruit_id INT NOT NULL,
@@ -105,7 +105,7 @@ ALTER TABLE company_info COMMENT'회사 정보 테이블';
 ALTER TABLE customer_center COMMENT'문의관리 테이블';
 ALTER TABLE inquiry_product COMMENT'문의 제품들을 저장하는 테이블';
 ALTER TABLE recruit COMMENT'채용정보 테이블';
-ALTER TABLE qualification COMMENT'모집부분 및 자격요건 테이블';
+ALTER TABLE recruit_qualification COMMENT'모집부분 및 자격요건 테이블';
 ALTER TABLE recruit_content COMMENT'title =
     1. 근무조건 및 환경 테이블
         sub_title = 근무형태, 근무요일/시간, 근무지역, 급여, 회사주소, 인근전철
@@ -189,7 +189,7 @@ INSERT INTO history VALUES (NULL, '2018-11-21', '사업장 이전 (서울시 마
 COMMIT;
 
 INSERT INTO recruit VALUES (NULL, '전략사업부 영업지원팀 채용', '2019-02-07', '2019-02-28', FALSE, 2, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 1);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 1);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 1);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 1);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 1);
@@ -204,7 +204,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 1);
 
 INSERT INTO recruit VALUES (NULL, '전략사업부 영업지원팀 채용', '2022-06-07', '2022-07-08', FALSE, 2, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 2);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 2);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 2);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 2);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 2);
@@ -219,7 +219,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 2);
 
 INSERT INTO recruit VALUES (NULL, '전략사업부 영업지원팀 채용', '2022-02-07', '2022-02-28', FALSE, 2, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 3);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 3);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 3);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 3);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 3);
@@ -234,7 +234,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 3);
 
 INSERT INTO recruit VALUES (NULL, '솔루션 사업부 C++ 개발자 채용', '2022-08-12', '2022-08-28', FALSE, 2, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 4);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 4);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 4);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 4);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 4);
@@ -250,7 +250,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담�
 
 
 INSERT INTO recruit VALUES (NULL, '[상시채용] 음성인식 및 가상상담 개발 개발자 채용', '2022-09-07', '2022-09-29', FALSE, 2, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 5);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 5);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 5);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 5);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 5);
@@ -265,7 +265,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 5);
 
 INSERT INTO recruit VALUES (NULL, '전략사업부 영업지원팀 채용', '2022-07-11', '2022-07-28', FALSE, 1, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 6);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 6);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 6);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 6);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 6);
@@ -280,7 +280,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 6);
 
 INSERT INTO recruit VALUES (NULL, '솔루션 사업부 C++ 개발자 채용', '2019-02-07', '2019-02-28', FALSE, 1, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 7);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 7);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 7);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 7);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 7);
@@ -295,7 +295,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 7);
 
 INSERT INTO recruit VALUES (NULL, '[상시채용] 음성인식 및 가상상담 개발 개발자 채용', '2022-08-16', '2022-09-03', FALSE, 2, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 8);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 8);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 8);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 8);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 8);
@@ -310,7 +310,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 8);
 
 INSERT INTO recruit VALUES (NULL, '전략사업부 영업지원팀 채용', '2022-10-12', '2022-10-28', FALSE, 1, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 9);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 9);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 9);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 9);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 9);
@@ -325,7 +325,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 9);
 
 INSERT INTO recruit VALUES (NULL, '솔루션 사업부 C++ 개발자 채용', '2022-10-02', '2022-10-21', FALSE, 1, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 10);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 10);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 10);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 10);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 10);
@@ -340,7 +340,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 10);
 
 INSERT INTO recruit VALUES (NULL, '[상시채용] 음성인식 및 가상상담 개발 개발자 채용', '2019-02-07', '2019-02-28', FALSE, 1, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 11);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 11);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무형태', '정규직(필요 시 수습기간 3개월)', 11);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 11);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 11);
@@ -355,7 +355,7 @@ INSERT INTO recruit_content VALUES (NULL, '접수기간 및 제출서류', '기�
 INSERT INTO recruit_content VALUES (NULL, '접수방법 및 문의처​', '담당자', '박준호 실장(전략기획실) 전화070-4405-7847', 11);
 
 INSERT INTO recruit VALUES (NULL, '[상시채용] 음성인식 및 가상상담 개발 개발자 채용', '2022-11-17', '2022-12-13', TRUE, 1, 0, NOW(), NOW());
-INSERT INTO qualification VALUES (NULL, 'recruit_img07.jpg', 12);
+INSERT INTO recruit_qualification VALUES (NULL, 'recruit_img07.jpg', 12);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경' , '근무형태', '정규직(필요 시 수습기간 3개월)', 12);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무요일/시간', '주 5일(월~금) 오전 9시~오후 6시', 12);
 INSERT INTO recruit_content VALUES (NULL, '근무조건 및 환경', '근무지역', '서울 - 금천구', 12);
@@ -376,9 +376,9 @@ DELETE FROM history WHERE id = 7;
 
 SELECT * FROM company_info;
 
-SELECT rt.id, subject, recruit_period_start, recruit_period_end, full_time, proceed,
+SELECT rt.id, subject, recruit_start_date, recruit_end_date, full_time, proceed,
        view, create_date, update_date, photo, title, sub_title, content
-FROM recruit rt, qualification qf, recruit_content rtc
+FROM recruit rt, recruit_qualification qf, recruit_content rtc
 WHERE rt.id = 1 AND rt.id = qf.recruit_id AND rt.id = rtc.recruit_id;
 
 SELECT * FROM recruit;
@@ -389,7 +389,19 @@ SELECT title, sub_title, content
 FROM recruit_content
 WHERE recruit_id = 1 ORDER BY id;
 
-SELECT photo FROM qualification WHERE recruit_id = 1 ORDER BY id;
+SELECT photo FROM recruit_qualification WHERE recruit_id = 1 ORDER BY id;
 
 UPDATE history SET content = '업데이트 테스트' WHERE id = 1;
 UPDATE history SET content = '㈜솔루게이트 법인 설립' WHERE id = 1;
+
+SELECT @rownum:=@rownum-1 as no, r.*
+FROM (SELECT @rownum:=@rownum+1 as no_count, rt.*
+    FROM (SELECT @rownum:=0) tmp1, (SELECT * FROM recruit) rt
+    WHERE id < 13 ORDER BY id desc) as r
+WHERE r.no_count > 0 AND r.no_count <= 10 AND (@rownum:=12)=12;
+
+
+DELETE FROM recruit_content WHERE recruit_id = 9;
+DELETE FROM recruit_qualification WHERE recruit_id = 9;
+DELETE FROM recruit WHERE id = 9;
+
