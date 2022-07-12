@@ -8,13 +8,23 @@
         SELECT * FROM recruit ORDER BY id desc
     </select>
 
-    <select id="selectRecruitPage" parameterType="SetPage" resultType="RecruitForView">
+    <select id="selectRecruitPage" parameterType="PageForDB" resultType="RecruitForView">
         <![CDATA[
-            SELECT @rownum:=@rownum-1 as no, r.*
-            FROM (SELECT @rownum:=@rownum+1 as no_count, rt.*
-            FROM (SELECT @rownum:=0) tmp1, (SELECT * FROM recruit) rt
-            WHERE id < 13 ORDER BY id desc) as r
-            WHERE r.no_count > 0 AND r.no_count <= 10 AND (@rownum:=12)=12;
+            SELECT @rownum:=@rownum-1 as number, r.*
+            FROM (SELECT @rownum:=@rownum+1 as number_count, rt.*
+                FROM (SELECT @rownum:=0) tmp1, (SELECT * FROM recruit) rt
+                ORDER BY id desc) as r
+            WHERE r.number_count >= #{numberCountMin}
+                AND r.number_count <= #{numberCountMax}
+                AND (@rownum:=#{lastNumber})=#{lastNumber}
         ]]>
+    </select>
+
+    <select id="selectContentTotalCount" resultType="Long">
+        SELECT count(id) as total_content_count FROM recruit
+    </select>
+
+    <select id="selectLastId" resultType="Long">
+        SELECT MAX(id) as last_id FROM recruit
     </select>
 </mapper>
