@@ -1,8 +1,8 @@
 package com.example.solugate.controller;
 
-import com.example.solugate.domain.Recruit;
+import com.example.solugate.domain.PageForView;
 import com.example.solugate.domain.RecruitForView;
-import com.example.solugate.domain.SetPage;
+import com.example.solugate.domain.RecruitListAndPage;
 import com.example.solugate.service.RecruitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,16 +19,25 @@ import java.util.List;
 public class RecruitController {
     private final RecruitService recruitService;
 
-    @RequestMapping("list")
-    public ModelAndView recruitList(@RequestParam(value = "cp", required = false, defaultValue = "0") int nowPage,
-                                    @RequestParam(value = "ps", required = false, defaultValue = "0") int onePageCount) {
+    @GetMapping("list")
+    public ModelAndView recruitList(@RequestParam(value = "cp", required = false, defaultValue = "0") String nowPageStr,
+                                    @RequestParam(value = "ps", required = false, defaultValue = "0") String onePageCountStr,
+                                    @RequestParam(value = "id", required = false, defaultValue = "0") String lastIdStr) {
 
-        List<RecruitForView> recruitsList = recruitService.setOnePage(nowPage, onePageCount);
-        return new ModelAndView("/recruit/recruit_recruit_list", "recruitsList", recruitsList);
+        RecruitListAndPage recruitListAndPage = recruitService.setOnePage(nowPageStr, onePageCountStr, lastIdStr);
+        List<RecruitForView> recruitForViewList = recruitListAndPage.getRecruitForViewList();
+        PageForView pageForView = recruitListAndPage.getPageForView();
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/recruit/recruit_recruit_list");
+        modelAndView.addObject("recruitForViewList", recruitForViewList);
+        modelAndView.addObject("pageForView", pageForView);
+        return modelAndView;
     }
 
     @GetMapping("view")
-    public String recruitView() {
+    public String recruitView(long id) {
+
         return "/recruit/recruit_recruit_view";
     }
 }

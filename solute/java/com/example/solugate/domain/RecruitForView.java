@@ -10,7 +10,7 @@ import java.sql.Date;
 @Getter
 @NoArgsConstructor
 public class RecruitForView {
-    private long no;
+    private long number;
     private long id;
     private String subject;
     private String recruitStartDate;
@@ -21,8 +21,8 @@ public class RecruitForView {
     private Date createDate;
     private Date updateDate;
 
-    public RecruitForView(long no, long id, String subject, String recruitStartDate, String recruitEndDate, Boolean fullTime, int proceed, long view, Date createDate, Date updateDate) {
-        this.no = no;
+    public RecruitForView(long number, long id, String subject, String recruitStartDate, String recruitEndDate, Boolean fullTime, int proceed, long view, Date createDate, Date updateDate) {
+        this.number = number;
         this.id = id;
         this.subject = subject;
         this.recruitStartDate = recruitStartDate;
