@@ -27,4 +27,12 @@
     <select id="selectLastId" resultType="Long">
         SELECT MAX(id) as last_id FROM recruit
     </select>
+
+    <select id="selectOneRecruit" parameterType="long" resultType="Recruit">
+        SELECT * FROM recruit WHERE id = #{id}
+    </select>
+
+    <select id="selectRecruitIdContentAll" parameterType="long" resultType="RecruitContent">
+        SELECT * FROM recruit_content WHERE recruit_id = #{id} ORDER BY title_group_id
+    </select>
 </mapper>

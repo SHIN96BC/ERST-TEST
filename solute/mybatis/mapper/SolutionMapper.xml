@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.solugate.mapper.SolutionMapper">
+    <select id="selectSolutionIdAndName" resultType="Solution">
+        SELECT id, name FROM solution
+    </select>
+
+    <select id="selectSolutionId" parameterType="long" resultType="Solution">
+        SELECT * FROM solution WHERE id = #{id}
+    </select>
+
+    <select id="selectSolutionPhotoId" parameterType="long" resultType="SolutionPhoto">
+        SELECT * FROM solution_photo WHERE solution_id = #{id}
+    </select>
+
+    <select id="selectSolutionContentId" parameterType="long" resultType="SolutionContent">
+        SELECT * FROM solution_content WHERE solution_id = #{id}
+    </select>
+</mapper>
