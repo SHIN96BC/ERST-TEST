@@ -71,4 +71,19 @@ public class RecruitServiceImpl implements RecruitService{
         return new RecruitListAndPage(recruitForViewList, pageForView);
     }
 
+    @Override
+    public RecruitContentForView findByRecruitContent(String idStr) {
+        CastUtil castUtil = new CastUtil();
+        long id = castUtil.changeStringToLong(idStr);
+        if(id < 0) return null;
+
+        Recruit recruit = recruitMapper.selectOneRecruit(id);
+        List<RecruitContent> recruitContentList = recruitMapper.selectRecruitIdContentAll(id);
+
+        if(recruit.getId() < 1 || recruitContentList.size() == 0) return null;
+
+
+        return new RecruitContentForView(recruit, recruitContentList);
+    }
+
 }

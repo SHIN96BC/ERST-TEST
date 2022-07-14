@@ -1,8 +1,6 @@
 package com.example.solugate.mapper;
 
-import com.example.solugate.domain.Recruit;
-import com.example.solugate.domain.RecruitForView;
-import com.example.solugate.domain.PageForDB;
+import com.example.solugate.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -13,4 +11,7 @@ public interface RecruitMapper {
     List<RecruitForView> selectRecruitPage(PageForDB pageForDB);
     Long selectContentTotalCount();
     Long selectLastId();
+
+    Recruit selectOneRecruit(long id);
+    List<RecruitContent> selectRecruitIdContentAll(long id);
 }

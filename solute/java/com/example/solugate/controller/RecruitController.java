@@ -1,10 +1,13 @@
 package com.example.solugate.controller;
 
 import com.example.solugate.domain.PageForView;
+import com.example.solugate.domain.RecruitContentForView;
 import com.example.solugate.domain.RecruitForView;
 import com.example.solugate.domain.RecruitListAndPage;
 import com.example.solugate.service.RecruitService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/recruit")
 public class RecruitController {
+    Logger logger = LoggerFactory.getLogger(RecruitController.class);
     private final RecruitService recruitService;
 
     @GetMapping("list")
@@ -36,8 +40,15 @@ public class RecruitController {
     }
 
     @GetMapping("view")
-    public String recruitView(long id) {
+    public ModelAndView recruitView(@RequestParam(value = "id") String idStr) {
+        RecruitContentForView recruitContentForView = recruitService.findByRecruitContent(idStr);
+        // recruitContentForView 가 null 이면 에러창으로
+        if (recruitContentForView == null){}
 
-        return "/recruit/recruit_recruit_view";
+        return new ModelAndView(
+                "/recruit/recruit_recruit_view",
+                "recruitContentForView",
+                recruitContentForView
+        );
     }
 }

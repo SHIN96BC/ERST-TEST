@@ -11,4 +11,5 @@ public class CustomerController {
     public String customer() {
         return "/customer/customercenter_inquiry";
     }
+
 }
