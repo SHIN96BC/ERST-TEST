@@ -1,7 +1,7 @@
 package com.example.solugate.controller;
 
 import com.example.solugate.domain.CompanyInfo;
-import com.example.solugate.domain.HistoryForView;
+import com.example.solugate.domain.History;
 import com.example.solugate.service.CompanyService;
 import com.example.solugate.service.CompanyServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -37,25 +37,8 @@ public class CompanyController {
 
     @GetMapping("history")
     public ModelAndView history() {
-        Map<String, List<HistoryForView>> resultMap = companyService.findByHistoryAll();
+        List<History> historyList = companyService.findByHistoryAll();
 
-        List<HistoryForView> leftOddList = null;
-        List<HistoryForView> rightEvenList = null;
-
-        Set<String> keys = resultMap.keySet();
-        for(String key: keys) {
-            if(key.equals("left")) {
-                leftOddList = resultMap.get(key);
-            }else {
-                rightEvenList = resultMap.get(key);
-            }
-        }
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/company/company_history");
-        modelAndView.addObject("leftOddList", leftOddList);
-        modelAndView.addObject("rightEvenList", rightEvenList);
-
-        return modelAndView;
+        return new ModelAndView("/company/company_history", "historyList", historyList);
     }
 }

@@ -29,7 +29,9 @@ public class SolutionController {
     public ModelAndView sgacc(@RequestParam(value = "id") String idStr) {
         SolutionContentForView solutionContentForView = solutionService.findBySolutionContent(idStr);
         return new ModelAndView(
-                "/solution/solutions_content", "solutionContentForView", solutionContentForView
+                "/solution/solutions_content",
+                "solutionContentForView",
+                solutionContentForView
         );
     }
 }

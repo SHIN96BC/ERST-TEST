@@ -80,8 +80,7 @@ public class RecruitServiceImpl implements RecruitService{
         Recruit recruit = recruitMapper.selectOneRecruit(id);
         List<RecruitContent> recruitContentList = recruitMapper.selectRecruitIdContentAll(id);
 
-        if(recruit.getId() < 1 || recruitContentList.size() == 0) return null;
-
+        if(recruit == null || recruit.getId() < 1 || recruitContentList.size() == 0) return null;
 
         return new RecruitContentForView(recruit, recruitContentList);
     }
