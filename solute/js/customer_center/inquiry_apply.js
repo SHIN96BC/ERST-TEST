@@ -152,7 +152,7 @@ $(document).ready(
                     alert('알수없는 오류에 의해 등록에 실패했습니다.\n 다시 시도해주세요.');
                 }
             },
-            error: function () {
+            error: function (error) {
                 alert('알수없는 오류에 의해 등록에 실패했습니다.\n 다시 시도해주세요.');
             }
         });
