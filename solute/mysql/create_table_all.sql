@@ -590,7 +590,7 @@ WHERE r.number_count >= 1 AND r.number_count <= 10;
 SELECT subject FROM recruit WHERE subject LIKE CONCAT('%','솔','%');
 
 -- 검색 도움 기능 쿼리문 완성
-SELECT *
+SELECT subject
 FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','사','%') GROUP BY subject
       UNION
       SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','사','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.subject) as uni
