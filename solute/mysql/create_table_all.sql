@@ -586,3 +586,14 @@ FROM (SELECT @rownum:=@rownum+1 as number_count, r_uni.*, total.total_count
 WHERE r.number_count >= 1 AND r.number_count <= 10;
 
 
+-- 검색 도움 기능
+SELECT subject FROM recruit WHERE subject LIKE CONCAT('%','솔','%');
+
+-- 검색 도움 기능 쿼리문 완성
+SELECT *
+FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','사','%') GROUP BY subject
+      UNION
+      SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','사','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.subject) as uni
+ORDER BY uni.id desc
+
+
