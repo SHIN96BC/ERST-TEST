@@ -12,11 +12,13 @@ public class PageForView {
     private int onePageCount;
     private int totalPageCount;
     private int onePageLength;
+    private String searchKeyword;
 
-    public PageForView(int nowPage, int onePageCount, int totalPageCount, int onePageLength) {
+    public PageForView(int nowPage, int onePageCount, int totalPageCount, int onePageLength, String searchKeyword) {
         this.nowPage = nowPage;
         this.onePageCount = onePageCount;
         this.totalPageCount = totalPageCount;
         this.onePageLength = onePageLength;
+        this.searchKeyword = searchKeyword;
     }
 }

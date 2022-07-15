@@ -8,17 +8,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PageForDB {
-    private long lastId;
-    private long lastNumber;
     private long numberCountMin;
     private long numberCountMax;
-    private long numberCountStart;
+    private String searchKeyword;
 
-    public PageForDB(long lastId, long lastNumber, long numberCountMin, long numberCountMax, long numberCountStart) {
-        this.lastId = lastId;
-        this.lastNumber = lastNumber;
+    public PageForDB(long numberCountMin, long numberCountMax, String searchKeyword) {
         this.numberCountMin = numberCountMin;
         this.numberCountMax = numberCountMax;
-        this.numberCountStart = numberCountStart;
+        this.searchKeyword = searchKeyword;
     }
 }

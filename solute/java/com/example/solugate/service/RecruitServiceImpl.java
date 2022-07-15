@@ -27,7 +27,9 @@ public class RecruitServiceImpl implements RecruitService{
     }
 
     @Override
-    public RecruitListAndPage setOnePage(String nowPageStr, String onePageCountStr, String lastIdStr) {
+    public RecruitListAndPage setOnePage(String nowPageStr, String onePageCountStr, String keyword) {
+        logger.info("service keyword = " + keyword);
+
         CastUtil castUtil = new CastUtil();
         int nowPage = castUtil.changeStringToInt(nowPageStr);
         int onePageCount = castUtil.changeStringToInt(onePageCountStr);
@@ -35,17 +37,9 @@ public class RecruitServiceImpl implements RecruitService{
         if(nowPage < 1) nowPage = 1;
         if(onePageCount < RECRUIT_MIN_PAGE_COUNT) onePageCount = RECRUIT_ONE_PAGE_COUNT;
 
-        long totalContentCount = recruitMapper.selectContentTotalCount();
-        long lastId = castUtil.changeStringToLong(lastIdStr);
-        long lastNumber = -1L;
         long numberCountMin = -1L;
         long numberCountMax = -1L;
-        long numberCountStart = -1L;
-        //  DB 검색에 필요한 데이터 세팅
-        if(lastId < 1 || nowPage == 1) lastId = recruitMapper.selectLastId();
-        // 게시글 번호를 보여주기 위한 변수
-        if(nowPage > 1) lastNumber = totalContentCount - (onePageCount * (nowPage-1)) + 1;
-        else lastNumber = totalContentCount + 1;
+
         // 한페이지에 보여줄 게시글 만큼만 뽑아오기위해 사용할 rownum 의 범위
         if (nowPage > 1) {
             numberCountMin = onePageCount * (nowPage - 1) + 1;
@@ -55,19 +49,27 @@ public class RecruitServiceImpl implements RecruitService{
             numberCountMax = onePageCount;
         }
 
-        // rownum 의 처음 숫자를 정해주는 변수
-        if(nowPage > 1) numberCountStart = onePageCount * (nowPage - 1);
-        else numberCountStart = 0;
+        if(keyword != null)
+            keyword = keyword.trim();
+        else
+            keyword = "";
 
         // DB 핸들링을 위해 필요한 객체 PageForDB 를 생성해서 RecruitForView List 를 받아옵니다.
-        PageForDB pageForDB = new PageForDB(lastId, lastNumber, numberCountMin, numberCountMax, numberCountStart);
-        List<RecruitForView> recruitForViewList = recruitMapper.selectRecruitPage(pageForDB);
+        PageForDB pageForDB = new PageForDB(numberCountMin, numberCountMax, keyword);
+
+        logger.info("pageForDB.getSearchKeyword = " + pageForDB.getSearchKeyword());
+
+        List<RecruitForView> recruitForViewList = recruitMapper.selectRecruitList(pageForDB);
 
         // 아래쪽에 페이지 번호를 세팅하기위해 필요한 객체입니다.
         PageUtil pageUtil = new PageUtil();
-        int totalPageCount = pageUtil.calculateTotalPageCount(onePageCount, totalContentCount);
+
+        int totalPageCount = 1;
+        if(recruitForViewList.size() > 0){
+            totalPageCount = pageUtil.calculateTotalPageCount(onePageCount, recruitForViewList.get(0).getTotalCount());
+        }
         // List 와 페이징 객체를 함께 컨트롤러로 전달해야해서 RecruitListAndPage 라는 객체에 담아서 전달합니다.
-        PageForView pageForView = new PageForView(nowPage, onePageCount, totalPageCount, RECRUIT_PAGE_LENGTH);
+        PageForView pageForView = new PageForView(nowPage, onePageCount, totalPageCount, RECRUIT_PAGE_LENGTH, keyword);
         return new RecruitListAndPage(recruitForViewList, pageForView);
     }
 
@@ -75,14 +77,21 @@ public class RecruitServiceImpl implements RecruitService{
     public RecruitContentForView findByRecruitContent(String idStr) {
         CastUtil castUtil = new CastUtil();
         long id = castUtil.changeStringToLong(idStr);
-        if(id < 0) return null;
+        if(id < 0)
+            return null;
 
         Recruit recruit = recruitMapper.selectOneRecruit(id);
         List<RecruitContent> recruitContentList = recruitMapper.selectRecruitIdContentAll(id);
 
-        if(recruit == null || recruit.getId() < 1 || recruitContentList.size() == 0) return null;
+        if(recruit == null || recruit.getId() < 1 || recruitContentList.size() == 0)
+            return null;
 
         return new RecruitContentForView(recruit, recruitContentList);
+    }
+
+    @Override
+    public List<String> setSearchSupport(String keyword) {
+        return recruitMapper.selectSearchSubject(keyword);
     }
 
 }

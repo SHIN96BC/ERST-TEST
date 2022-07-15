@@ -22,12 +22,11 @@ public class RecruitController {
     private final RecruitService recruitService;
 
     @GetMapping("list")
-    public ModelAndView recruitList(HttpServletRequest request,
+    public ModelAndView recruitList(String keyword,
                                     @RequestParam(value = "cp", required = false, defaultValue = "0") String nowPageStr,
-                                    @RequestParam(value = "ps", required = false, defaultValue = "0") String onePageCountStr,
-                                    @RequestParam(value = "id", required = false, defaultValue = "0") String lastIdStr) {
+                                    @RequestParam(value = "ps", required = false, defaultValue = "0") String onePageCountStr) {
 
-        RecruitListAndPage recruitListAndPage = recruitService.setOnePage(nowPageStr, onePageCountStr, lastIdStr);
+        RecruitListAndPage recruitListAndPage = recruitService.setOnePage(nowPageStr, onePageCountStr, keyword);
         List<RecruitForView> recruitForViewList = recruitListAndPage.getRecruitForViewList();
         PageForView pageForView = recruitListAndPage.getPageForView();
 
@@ -36,12 +35,6 @@ public class RecruitController {
         modelAndView.addObject("recruitForViewList", recruitForViewList);
         modelAndView.addObject("pageForView", pageForView);
 
-        // 세션에 현재 페이지의 상태를 저장합니다.
-        HttpSession session = request.getSession();
-        if(!session.getAttribute(SessionConstant.RECRUIT_PAGE_STATE).equals(SessionConstant.RECRUIT_PAGE_LIST)) {
-            session.setAttribute(SessionConstant.RECRUIT_PAGE_STATE, SessionConstant.RECRUIT_PAGE_LIST);
-        }
-
         return modelAndView;
     }
 
@@ -49,9 +42,9 @@ public class RecruitController {
     public ModelAndView recruitView(@RequestParam(value = "id") String idStr) {
         RecruitContentForView recruitContentForView = recruitService.findByRecruitContent(idStr);
         // recruitContentForView 가 null 이면 에러창으로
-        if (recruitContentForView == null){
+        if (recruitContentForView == null)
             return new ModelAndView("redirect:/error/null");
-        }
+
 
         return new ModelAndView(
                 "/recruit/recruit_recruit_view",
@@ -62,18 +55,7 @@ public class RecruitController {
 
     @PostMapping("search_support")
     @ResponseBody
-    public List<Recruit> searchSupport() {
-        return null;
-    }
-
-    @PostMapping("search_content")
-    public ModelAndView searchContent(HttpServletRequest request) {
-
-        // 세션에 현재 페이지의 상태를 저장합니다.
-        HttpSession session = request.getSession();
-        if(!session.getAttribute(SessionConstant.RECRUIT_PAGE_STATE).equals(SessionConstant.RECRUIT_PAGE_SEARCH)) {
-            session.setAttribute(SessionConstant.RECRUIT_PAGE_STATE, SessionConstant.RECRUIT_PAGE_SEARCH);
-        }
-        return null;
+    public List<String> searchSupport(String keyword) {
+        return recruitService.setSearchSupport(keyword);
     }
 }

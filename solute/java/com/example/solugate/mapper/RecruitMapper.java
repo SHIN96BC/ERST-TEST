@@ -8,10 +8,8 @@ import java.util.List;
 @Mapper
 public interface RecruitMapper {
     List<Recruit> selectRecruitAll();
-    List<RecruitForView> selectRecruitPage(PageForDB pageForDB);
-    Long selectContentTotalCount();
-    Long selectLastId();
-
+    List<RecruitForView> selectRecruitList(PageForDB pageForDB);
     Recruit selectOneRecruit(long id);
     List<RecruitContent> selectRecruitIdContentAll(long id);
+    List<String> selectSearchSubject(String keyword);
 }

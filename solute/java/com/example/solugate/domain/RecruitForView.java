@@ -20,8 +20,10 @@ public class RecruitForView {
     private long view;
     private Date createDate;
     private Date updateDate;
+    private long totalCount;
 
-    public RecruitForView(long number, long id, String subject, String recruitStartDate, String recruitEndDate, Boolean fullTime, int proceed, long view, Date createDate, Date updateDate) {
+    public RecruitForView(long number, long id, String subject, String recruitStartDate, String recruitEndDate,
+                          Boolean fullTime, int proceed, long view, Date createDate, Date updateDate, long totalCount) {
         this.number = number;
         this.id = id;
         this.subject = subject;
@@ -32,5 +34,6 @@ public class RecruitForView {
         this.view = view;
         this.createDate = createDate;
         this.updateDate = updateDate;
+        this.totalCount = totalCount;
     }
 }
