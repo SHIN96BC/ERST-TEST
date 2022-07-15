@@ -8,24 +8,26 @@
         SELECT * FROM recruit ORDER BY id desc
     </select>
 
-    <select id="selectRecruitPage" parameterType="PageForDB" resultType="RecruitForView">
+    <select id="selectRecruitList" parameterType="PageForDB" resultType="RecruitForView">
         <![CDATA[
-            SELECT @rownum:=@rownum-1 as number, r.*
-            FROM (SELECT @rownum:=@rownum+1 as number_count, rt.*
-                FROM (SELECT @rownum:=0) tmp1, (SELECT * FROM recruit) rt
-                ORDER BY id desc) as r
+            SELECT @rownum:=r.total_count+1-r.number_count as number, r.*
+            FROM (SELECT @rownum:=@rownum+1 as number_count, r_uni.*, total.total_count
+                FROM (SELECT @rownum:=0) tmp1,
+                    (SELECT *
+                    FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%',#{searchKeyword},'%')
+                            UNION
+                            SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%',#{searchKeyword},'%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                     ORDER BY uni.id desc
+                    ) as r_uni,
+                    (SELECT COUNT(*) as total_count
+                    FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%',#{searchKeyword},'%')
+                            UNION
+                            SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%',#{searchKeyword},'%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                    ) as total
+                ) as r
             WHERE r.number_count >= #{numberCountMin}
-                AND r.number_count <= #{numberCountMax}
-                AND (@rownum:=#{lastNumber})=#{lastNumber}
+              AND r.number_count <= #{numberCountMax}
         ]]>
-    </select>
-
-    <select id="selectContentTotalCount" resultType="Long">
-        SELECT count(id) as total_content_count FROM recruit
-    </select>
-
-    <select id="selectLastId" resultType="Long">
-        SELECT MAX(id) as last_id FROM recruit
     </select>
 
     <select id="selectOneRecruit" parameterType="long" resultType="Recruit">
@@ -34,5 +36,13 @@
 
     <select id="selectRecruitIdContentAll" parameterType="long" resultType="RecruitContent">
         SELECT * FROM recruit_content WHERE recruit_id = #{id} ORDER BY title_group_id
+    </select>
+
+    <select id="selectSearchSubject" parameterType="String" resultType="String">
+        SELECT subject
+        FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%',#{keyword},'%') GROUP BY subject
+              UNION
+              SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','사','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.subject) as uni
+        ORDER BY uni.id desc
     </select>
 </mapper>
