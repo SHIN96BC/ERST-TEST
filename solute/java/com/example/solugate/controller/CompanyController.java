@@ -38,7 +38,6 @@ public class CompanyController {
     @GetMapping("history")
     public ModelAndView history() {
         List<History> historyList = companyService.findByHistoryAll();
-
         return new ModelAndView("/company/company_history", "historyList", historyList);
     }
 }

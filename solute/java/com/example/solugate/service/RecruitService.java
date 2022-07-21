@@ -7,6 +7,6 @@ import java.util.List;
 public interface RecruitService {
     List<Recruit> findByRecruitAll();
     RecruitListAndPage setOnePage(String nowPageStr, String onePageCountStr, String keyword);
-    RecruitContentForView findByRecruitContent(String idStr);
+    RecruitContentForView findByRecruitContent(String idStr, String nowPageStr, String onePageCountStr, String keyword);
     List<String> setSearchSupport(String keyword);
 }

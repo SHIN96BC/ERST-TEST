@@ -21,4 +21,9 @@ public class PageForView {
         this.onePageLength = onePageLength;
         this.searchKeyword = searchKeyword;
     }
+    public PageForView(int nowPage, int onePageCount, String searchKeyword) {
+        this.nowPage = nowPage;
+        this.onePageCount = onePageCount;
+        this.searchKeyword = searchKeyword;
+    }
 }

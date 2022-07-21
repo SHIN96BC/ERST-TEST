@@ -28,8 +28,6 @@ public class RecruitServiceImpl implements RecruitService{
 
     @Override
     public RecruitListAndPage setOnePage(String nowPageStr, String onePageCountStr, String keyword) {
-        logger.info("service keyword = " + keyword);
-
         CastUtil castUtil = new CastUtil();
         int nowPage = castUtil.changeStringToInt(nowPageStr);
         int onePageCount = castUtil.changeStringToInt(onePageCountStr);
@@ -54,10 +52,12 @@ public class RecruitServiceImpl implements RecruitService{
         else
             keyword = "";
 
+        // + 인코딩 풀어주기
+        if(keyword.contains("%2B"))
+            keyword = keyword.replace("%2B", "+");
+
         // DB 핸들링을 위해 필요한 객체 PageForDB 를 생성해서 RecruitForView List 를 받아옵니다.
         PageForDB pageForDB = new PageForDB(numberCountMin, numberCountMax, keyword);
-
-        logger.info("pageForDB.getSearchKeyword = " + pageForDB.getSearchKeyword());
 
         List<RecruitForView> recruitForViewList = recruitMapper.selectRecruitList(pageForDB);
 
@@ -74,19 +74,44 @@ public class RecruitServiceImpl implements RecruitService{
     }
 
     @Override
-    public RecruitContentForView findByRecruitContent(String idStr) {
+    public RecruitContentForView findByRecruitContent(String idStr, String nowPageStr, String onePageCountStr, String keyword) {
         CastUtil castUtil = new CastUtil();
+        // id 체크
         long id = castUtil.changeStringToLong(idStr);
         if(id < 0)
             return null;
+        // 페이지 체크
+        int nowPage = castUtil.changeStringToInt(nowPageStr);
+        int onePageCount = castUtil.changeStringToInt(onePageCountStr);
+        // 페이지 계산에 필요한 현재 페이지 = nowPage 와 한페이지에 표시할 계시글 개수 = onePageCount (최소 표시 개수를 5개로 제한합니다.)
+        if(nowPage < 1) nowPage = 1;
+        if(onePageCount < RECRUIT_MIN_PAGE_COUNT) onePageCount = RECRUIT_ONE_PAGE_COUNT;
+        // keyword 체크
+        if(keyword != null)
+            keyword = keyword.trim();
+        else
+            keyword = "";
 
-        Recruit recruit = recruitMapper.selectOneRecruit(id);
+        // + 인코딩 풀어주기
+        if(keyword.contains("%2B"))
+            keyword = keyword.replace("%2B", "+");
+
+        PageForView pageForView = new PageForView(nowPage, onePageCount, keyword);
+
+        PageForDB pageForDB = new PageForDB(id,keyword);
+
+        List<Recruit> recruitList = recruitMapper.selectOneRecruit(pageForDB);
+
+        for(Recruit recruit: recruitList) {
+            logger.info("recruit.getId() = " + recruit.getId());
+        }
+
         List<RecruitContent> recruitContentList = recruitMapper.selectRecruitIdContentAll(id);
 
-        if(recruit == null || recruit.getId() < 1 || recruitContentList.size() == 0)
+        if(recruitList == null || recruitList.size() < 1 || recruitContentList.size() < 1)
             return null;
 
-        return new RecruitContentForView(recruit, recruitContentList);
+        return new RecruitContentForView(id, recruitList, recruitContentList, pageForView);
     }
 
     @Override

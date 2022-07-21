@@ -10,11 +10,15 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RecruitContentForView {
-    private Recruit recruit;
+    private long nowId;
+    private List<Recruit> recruitList;
     private List<RecruitContent> recruitContentList;
+    private PageForView pageForView;
 
-    public RecruitContentForView(Recruit recruit, List<RecruitContent> recruitContentList) {
-        this.recruit = recruit;
+    public RecruitContentForView(long nowId, List<Recruit> recruitList, List<RecruitContent> recruitContentList, PageForView pageForView) {
+        this.nowId = nowId;
+        this.recruitList = recruitList;
         this.recruitContentList = recruitContentList;
+        this.pageForView = pageForView;
     }
 }
