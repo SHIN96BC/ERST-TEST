@@ -561,9 +561,9 @@ SELECT * FROM recruit WHERE subject LIKE CONCAT('%','솔','%');
 
 -- union 을 사용해서 풀 아웃 조인을 실행한 쿼리문
 SELECT *
-FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','사','%')
+FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','솔','%')
     UNION
-    SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','사','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+    SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','솔','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
 ORDER BY uni.id desc;
 
 
@@ -594,6 +594,36 @@ SELECT subject
 FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','사','%') GROUP BY subject
       UNION
       SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','사','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.subject) as uni
-ORDER BY uni.id desc
+ORDER BY uni.id desc;
 
 
+-- recruit view 페이지 다음글 이전글을 위한 쿼리문 실패(검색했을 때 대응할 수 없는 쿼리문)
+SELECT r.*
+FROM recruit r
+WHERE r.id IN(
+    (SELECT id FROM recruit WHERE id < 5 ORDER BY id DESC LIMIT 1),
+    (SELECT id FROM recruit WHERE id = 5),
+    (SELECT id FROM recruit WHERE id > 5 ORDER BY id LIMIT 1)
+    );
+
+
+-- recruit view 페이지 다음글 이전글을 위한 쿼리문
+SELECT sr.*
+FROM recruit sr
+WHERE sr.id IN(
+               (SELECT id FROM (SELECT *
+                                FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','솔','%')
+                                      UNION
+                                      SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','솔','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                                ORDER BY uni.id) rs WHERE id < 7 ORDER BY id DESC LIMIT 1),
+               (SELECT id FROM (SELECT *
+                                FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','솔','%')
+                                      UNION
+                                      SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','솔','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                                ORDER BY uni.id) rs WHERE id = 7),
+               (SELECT id FROM (SELECT *
+                                FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%','솔','%')
+                                      UNION
+                                      SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','솔','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                                ORDER BY uni.id) rs WHERE id > 7 ORDER BY id LIMIT 1)
+    );
