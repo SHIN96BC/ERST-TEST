@@ -30,8 +30,28 @@
         ]]>
     </select>
 
-    <select id="selectOneRecruit" parameterType="long" resultType="Recruit">
-        SELECT * FROM recruit WHERE id = #{id}
+    <select id="selectOneRecruit" parameterType="PageForDB" resultType="Recruit">
+        <![CDATA[
+            SELECT sr.*
+            FROM recruit sr
+            WHERE sr.id IN(
+                (SELECT id FROM (SELECT *
+                                 FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%',#{searchKeyword},'%')
+                                       UNION
+                                       SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%',#{searchKeyword},'%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                                 ORDER BY uni.id) rs WHERE id < #{id} ORDER BY id DESC LIMIT 1),
+                (SELECT id FROM (SELECT *
+                                FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%',#{searchKeyword},'%')
+                                      UNION
+                                      SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%',#{searchKeyword},'%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                                ORDER BY uni.id) rs WHERE id = #{id}),
+                (SELECT id FROM (SELECT *
+                                FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%',#{searchKeyword},'%')
+                                      UNION
+                                      SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%',#{searchKeyword},'%')) rc WHERE r.id = rc.recruit_id GROUP BY r.id) as uni
+                                ORDER BY uni.id) rs WHERE id > #{id} ORDER BY id LIMIT 1)
+                )
+        ]]>
     </select>
 
     <select id="selectRecruitIdContentAll" parameterType="long" resultType="RecruitContent">
@@ -42,7 +62,7 @@
         SELECT subject
         FROM (SELECT * FROM recruit WHERE subject LIKE CONCAT('%',#{keyword},'%') GROUP BY subject
               UNION
-              SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%','사','%')) rc WHERE r.id = rc.recruit_id GROUP BY r.subject) as uni
+              SELECT r.* FROM recruit r, (SELECT * FROM recruit_content WHERE content LIKE CONCAT('%',#{keyword},'%')) rc WHERE r.id = rc.recruit_id GROUP BY r.subject) as uni
         ORDER BY uni.id desc
     </select>
 </mapper>
