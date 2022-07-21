@@ -5,6 +5,15 @@ plugins {
 	id 'war'
 }
 
+apply plugin: 'war'
+
+war {
+	archiveBaseName = 'solugate'
+	archiveFileName = 'solugate.war'
+}
+bootWar.enabled = false
+war.enabled = true
+
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
