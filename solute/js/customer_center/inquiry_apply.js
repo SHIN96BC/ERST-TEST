@@ -49,6 +49,14 @@ $(document).ready(
             return;
         }
 
+        // 개인정보 수집 및 활용 동의 체크
+        let agree01Check = $('#agree01').prop('checked');
+        let agree02Check = $('#agree02').prop('checked');
+        if(agree01Check === false || agree02Check === false) {
+            alert('개인정보 수집 및 활용 동의는 필수사항입니다.');
+            return;
+        }
+
         // 문의 제품 체크
         const inquiryProductNameList = [];
         const inquiryProductLength = $('#tab01').find('.item_list').children().length;
@@ -56,7 +64,7 @@ $(document).ready(
         for(let i = 0; i < inquiryProductLength; i++) {
             // jquery 의 prop 함수는 checked 여부를 확인할 수 있는 함수입니다.
             let checked = $('#tab01').find(`#chk${i+1}`).prop('checked');
-            if(checked == true) {
+            if(checked === true) {
                 let inquiryProductName = $('#tab01').find(`#chk${i+1}`).siblings('label').text();
                 inquiryProductNameList.push(inquiryProductName);
             }

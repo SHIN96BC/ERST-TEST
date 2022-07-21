@@ -1,5 +1,5 @@
 
-$(document).ready(function () {
+$(document).ready(
     $.ajax({
         url: "/solution/menu",
         type: "POST",
@@ -12,4 +12,4 @@ $(document).ready(function () {
             }
         }
     })
-});
+);

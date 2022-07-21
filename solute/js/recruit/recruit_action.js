@@ -28,7 +28,11 @@ function searchButton() {
     let onePageCount = $('#one_page_count').val();
     if(isNaN(onePageCount))
         return;
-    location.href = `/recruit/list?cp=0&ps=${onePageCount}&keyword=${nowKeyword}`;
+    // ++ 와 [ ] 등을 get 방식으로 넘기기위해 인코딩을 해줍니다.
+    // + 인코딩
+    nowKeyword = nowKeyword.replace(/\+/g,"%2B");
+    // encodeURI 함수는 uri 에서 자주 사용하는 예약문자 이외에 모든 문자를 인코딩 해줍니다.
+    location.href = encodeURI(`/recruit/list?cp=0&ps=${onePageCount}&keyword=${nowKeyword}`);
 }
 
 $(document).ready(
@@ -48,13 +52,25 @@ $(document).ready(
                    type: "POST",
                    data: {keyword: nowKeyword},
                    success: function (subjectList) {
+                       $('#search_support').empty();
                        // input 태그 아래에 추천 검색어를 띄워줍니다.
-                       let searchSupport = `
-                            
-                       `;
+                       let searchSupport = `<div id="recommend" class="invisible">`;
 
-                       $('#search').append();
+                       for(let subject of subjectList) {
+                           if(subject === null || subject.trim().length === 0)
+                               continue;
+                           let cutSubject = "";
+                           if(subject.length > 20){
+                               cutSubject = subject.substring(0, 19);
+                           }else {
+                               cutSubject = subject;
+                           }
+                           searchSupport += `<div class="search_word">${cutSubject}</div>`;
+                       }
 
+                       searchSupport += `</div>`;
+
+                       $('#search_support').append(searchSupport);
 
                    },
                    error: function (error) {
@@ -63,8 +79,15 @@ $(document).ready(
                    }
                });
            }else {
-               $('#search').empty();
+               $('#search_support').empty();
            }
       }
+   }),
+
+   $(document).on('click', '.search_word', function () {
+       let searchWord = $(this).text();
+
+       $('#search').val(searchWord);
+       $('#search_support').empty();
    })
 );
